@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yo Me Confieso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --teal: rgb(89, 193, 192);
+            --teal-dark: rgb(60, 160, 159);
+            --teal-light: rgba(89, 193, 192, 0.12);
+            --bg: #f0f6f6;
+            --text-dark: #1a2e2e;
+            --text-mid: #4a6868;
+            --white: #ffffff;
+            --shadow-soft: 0 8px 32px rgba(89, 193, 192, 0.18);
+            --shadow-hover: 0 16px 40px rgba(89, 193, 192, 0.3);
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background: var(--bg);
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(89,193,192,0.13) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(89,193,192,0.09) 0%, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(48px, 10vh, 100px) 20px clamp(32px, 6vh, 60px);
+            text-align: center;
+        }
+
+        .cruz {
+            font-size: clamp(2.4rem, 7vw, 4rem);
+            color: var(--teal);
+            margin-bottom: 18px;
+            animation: flotar 3.5s ease-in-out infinite;
+            display: block;
+        }
+
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 6vw, 3.4rem);
+            color: var(--text-dark);
+            line-height: 1.15;
+            letter-spacing: -0.5px;
+            margin-bottom: 14px;
+        }
+
+        .hero h1 span {
+            color: var(--teal);
+        }
+
+        .hero p {
+            font-size: clamp(0.95rem, 2.5vw, 1.1rem);
+            color: var(--text-mid);
+            font-weight: 300;
+            max-width: 480px;
+            line-height: 1.65;
+        }
+
+        /* ── BOTÓN + ── */
+        .boton-flotante {
+            margin: 10px auto 36px;
+            width: clamp(60px, 14vw, 76px);
+            height: clamp(60px, 14vw, 76px);
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: clamp(2rem, 6vw, 2.8rem);
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-soft);
+            cursor: pointer;
+            transition: transform 0.35s cubic-bezier(.34,1.56,.64,1),
+                        box-shadow 0.35s ease,
+                        opacity 0.4s ease,
+                        background 0.25s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .boton-flotante::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            border: 2px solid rgba(89,193,192,0.35);
+            animation: pulso 2.4s ease-out infinite;
+        }
+
+        @keyframes pulso {
+            0%   { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+
+        .boton-flotante:hover {
+            background: var(--teal-dark);
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .boton-flotante.oculto {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(0.4) rotate(180deg);
+        }
+
+        /* ── GRID ── */
+        .contenedor {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: clamp(14px, 2.5vw, 22px);
+            padding: 0 clamp(14px, 4vw, 32px) 60px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(40px);
+            transition: opacity 0.55s ease, transform 0.55s ease, visibility 0.55s;
+        }
+
+        .contenedor.mostrar {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Staggered card entrance */
+        .contenedor.mostrar .boton:nth-child(1) { animation: entrar 0.5s 0.05s both; }
+        .contenedor.mostrar .boton:nth-child(2) { animation: entrar 0.5s 0.12s both; }
+        .contenedor.mostrar .boton:nth-child(3) { animation: entrar 0.5s 0.19s both; }
+        .contenedor.mostrar .boton:nth-child(4) { animation: entrar 0.5s 0.26s both; }
+        .contenedor.mostrar .boton:nth-child(5) { animation: entrar 0.5s 0.33s both; }
+        .contenedor.mostrar .boton:nth-child(6) { animation: entrar 0.5s 0.40s both; }
+
+        @keyframes entrar {
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* ── CARDS ── */
+        .boton {
+            min-height: clamp(120px, 20vh, 170px);
+            border: 2px solid transparent;
+            border-radius: 16px;
+            background: var(--teal);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: clamp(14px, 3vw, 22px);
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            transition: transform 0.28s cubic-bezier(.34,1.56,.64,1),
+                        box-shadow 0.28s ease,
+                        background 0.3s ease,
+                        border-color 0.3s ease,
+                        color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .boton::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .boton:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .icono {
+            font-size: clamp(1.6rem, 4vw, 2.1rem);
+            margin-bottom: 10px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .boton:hover .icono {
+            transform: scale(1.15);
+        }
+
+        .titulo {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1rem, 3.2vw, 1.25rem);
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: 0.2px;
+        }
+
+        .explicacion {
+            font-size: clamp(0.82rem, 2.4vw, 0.97rem);
+            font-weight: 300;
+            line-height: 1.5;
+            display: none;
+            color: var(--text-mid);
+        }
+
+        /* Active / flip state */
+        .boton.activo {
+            background: var(--white);
+            color: var(--text-dark);
+            border-color: var(--teal);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .boton.activo .titulo {
+            display: none;
+        }
+
+        .boton.activo .icono {
+            display: none;
+        }
+
+        .boton.activo .explicacion {
+            display: block;
+        }
+
+        .boton.activo .ir-link {
+            display: inline-flex;
+        }
+
+        .ir-link {
+            display: none;
+            margin-top: 12px;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--teal-dark);
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+
+        .ir-link svg {
+            width: 14px;
+            height: 14px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 24px 20px;
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--text-mid);
+            font-weight: 300;
+        }
+
+        footer a {
+            color: var(--teal-dark);
+            text-decoration: none;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 480px) {
+            .contenedor {
+                gap: 12px;
+                padding: 0 12px 40px;
+            }
+            .boton {
+                min-height: 108px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HERO -->
+    <section class="hero">
+        <span class="cruz">✝</span>
+        <h1>Yo Me <span>Confieso</span></h1>
+        <p>Una guía para acercarte al sacramento de la reconciliación con calma y confianza.</p>
+    </section>
+
+    <!-- Botón + -->
+    <button class="boton-flotante" id="btnMas" aria-label="Ver opciones">+</button>
+
+    <!-- Grid de opciones -->
+    <div class="contenedor" id="contenedorBotones" role="navigation" aria-label="Secciones del sitio">
+
+        <button class="boton" data-url="https://www.yomeconfieso.es/0-intro/" aria-label="Para profundizar">
+            <span class="icono">📖</span>
+            <div class="titulo">PARA PROFUNDIZAR</div>
+            <div class="explicacion">Saber más sobre la confesión y su significado.</div>
+            <a class="ir-link" href="https://www.yomeconfieso.es/0-intro/">Ir <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </button>
+
+        <button class="boton" data-url="https://yomeconfieso.es/0-dudas/" aria-label="Dudas frecuentes">
+            <span class="icono">❓</span>
+            <div class="titulo">DUDAS</div>
+            <div class="explicacion">Dudas frecuentes que nos escribís por mail.</div>
+            <a class="ir-link" href="https://yomeconfieso.es/0-dudas/">Ir <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </button>
+
+        <button class="boton" data-url="https://www.yomeconfieso.es/2-examen/" aria-label="Examen de conciencia para adultos">
+            <span class="icono">🌿</span>
+            <div class="titulo">EXAMEN ADULTOS</div>
+            <div class="explicacion">Ayuda para mayores de 30 años.</div>
+            <a class="ir-link" href="https://www.yomeconfieso.es/2-examen/">Ir <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </button>
+
+        <button class="boton" data-url="https://www.yomeconfieso.es/2-examen-jovenes/" aria-label="Examen de conciencia para jóvenes">
+            <span class="icono">🌱</span>
+            <div class="titulo">EXAMEN JÓVENES</div>
+            <div class="explicacion">Ayuda para jóvenes entre 15 y 30 años.</div>
+            <a class="ir-link" href="https://www.yomeconfieso.es/2-examen-jovenes/">Ir <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </button>
+
+        <button class="boton" data-url="https://www.yomeconfieso.es/2-examen-primaria/" aria-label="Examen de conciencia para chicos y chicas">
+            <span class="icono">⭐</span>
+            <div class="titulo">EXAMEN CHICOS/AS</div>
+            <div class="explicacion">Ayuda para chicos/as entre 10 y 15 años.</div>
+            <a class="ir-link" href="https://www.yomeconfieso.es/2-examen-primaria/">Ir <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </button>
+
+        <button class="boton" data-url="https://www.yomeconfieso.es/contacto/" aria-label="Contacto">
+            <span class="icono">✉️</span>
+            <div class="titulo">CONTACTO</div>
+            <div class="explicacion">Cuéntanos tus experiencias con la confesión.</div>
+            <a class="ir-link" href="https://www.yomeconfieso.es/contacto/">Ir <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        </button>
+
+    </div>
+
+    <footer>
+        <a href="https://www.yomeconfieso.es">yomeconfieso.es</a> &nbsp;·&nbsp; Una iniciativa para acercar el sacramento de la Reconciliación
+    </footer>
+
+    <script>
+        const btnMas = document.getElementById('btnMas');
+        const contenedor = document.getElementById('contenedorBotones');
+        const botones = document.querySelectorAll('.boton');
+        let botonActivo = null;
+
+        // Mostrar grid al pulsar +
+        btnMas.addEventListener('click', () => {
+            contenedor.classList.add('mostrar');
+            btnMas.classList.add('oculto');
+            setTimeout(() => {
+                contenedor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 120);
+        });
+
+        // Lógica de tarjetas: primer clic → mostrar descripción, segundo clic → navegar
+        botones.forEach(boton => {
+            boton.addEventListener('click', (e) => {
+                // Si se hizo clic en el enlace "Ir", dejarlo navegar normalmente
+                if (e.target.closest('.ir-link')) return;
+
+                if (boton.classList.contains('activo')) {
+                    // Segundo clic: navegar
+                    const url = boton.getAttribute('data-url');
+                    if (url && url !== '#') window.location.href = url;
+                } else {
+                    // Primer clic: mostrar info
+                    if (botonActivo && botonActivo !== boton) {
+                        botonActivo.classList.remove('activo');
+                    }
+                    boton.classList.add('activo');
+                    botonActivo = boton;
+                }
+            });
+        });
+
+        // Cerrar tarjeta activa al hacer clic fuera
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.boton') && botonActivo) {
+                botonActivo.classList.remove('activo');
+                botonActivo = null;
+            }
+        });
+    </script>
+</body>
+</html>
